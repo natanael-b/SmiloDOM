@@ -1,4 +1,3 @@
-  
 {
     function createTag(name) {
         return function (properties,childrens) {
@@ -29,6 +28,7 @@
             return el;
           }
           for (const [key, value] of Object.entries(_properties)) {
+            let val = value;
             if (key === "childrenList") continue;
             if (key === "classList") {
               if (typeof value === "string") {
@@ -38,19 +38,30 @@
               el["className"] = value.join(" ");
               continue;
             }
-            if (key === "style" && typeof value === "object") {
-                Object.assign(el.style, value);
+            if (key === "style" && typeof val === "object") {
+                Object.assign(el.style, val);
                 continue;
+            }
+            if (typeof val === "function") {
+              val = () => value();
             }
             if (key in el) {
-                el[key] = value;
+                el[key] = val;
                 continue;
             }
-            el.setAttribute(key, value);
+            el.setAttribute(key, val);
           }
 
           _properties.childrenList = (_properties.childrenList || (typeof childrens === "object" ? childrens : [childrens]));
           if (_properties.childrenList[0] === undefined) _properties.childrenList.shift();
+
+          if (name == "img") {
+            if (typeof childrens === "string" && el.src === "") {
+              el.src = childrens;
+              _properties.childrenList = [];
+            }
+          }
+          
 
           _properties.childrenList.flat().forEach(child => {
             if (child instanceof Element) {
@@ -59,6 +70,7 @@
             }
             el.appendChild(document.createTextNode(child));
           });
+
           return el;
         };
     }
@@ -89,6 +101,6 @@
 
     htmlTags.forEach(child => globalThis[child] = createTag(child));
     globalThis["createTag"] = createTag;
+    globalThis["body"] = document.body;
+    globalThis["head"] = document.head;
 }
-  
-  
