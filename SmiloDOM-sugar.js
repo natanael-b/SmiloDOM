@@ -1,4 +1,6 @@
 
+// Açúcares sintaticos
+  
 globalThis["hyperlink"] = (text,target) => {
   let childrenList = (Array.isArray(text) ? text : [text]);
   return a({
@@ -163,4 +165,3 @@ globalThis["figure"] = (img, text) => {
     ]
   });
 };
-
