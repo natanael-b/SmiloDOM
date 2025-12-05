@@ -1,3 +1,5 @@
+// Core
+
 {
     function createTag(name) {
         return function (properties,childrens) {
@@ -102,5 +104,6 @@
     htmlTags.forEach(child => globalThis[child] = createTag(child));
     globalThis["createTag"] = createTag;
     globalThis["body"] = document.body;
-    globalThis["head"] = document.head;
+    globalThis["head"] = document.body;
 }
+  
